@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.use(express.json());
 
-//PROJECT
+//PROJECTS
 router.get("/", async (req, res) => {
     try {
         const projects = await dbProjects.get();
@@ -56,5 +56,31 @@ router.post("/", async (req, res) => {
         }
     };
 });
+
+router.put("/:projectId", async (req, res) => {
+    const { projectId } = req.params;
+    const updated = req.body;
+    if ( !projectId ) {
+        return null;
+    } else if ( !updated.name || updated.name.length > 128) {
+        return res.status(400).json({
+            message: "Project name is required. Project name cannot be more than 128 characters."
+        })
+    } else if ( !updated.description ) {
+        return res.status(400).json({
+            message: "Please enter project description."
+        })
+    } else {
+        try {
+            const updatedProject = await dbProjects.update(projectId, updated);
+            res.status(200).json(updatedProject);
+        }
+        catch(err) {
+            res.status(500).json({
+                message: "Updated failed."
+            })
+        }
+    }
+})
 
 module.exports = router;

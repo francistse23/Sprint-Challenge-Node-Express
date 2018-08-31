@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.use(express.json());
 
-//
+//ACTIONS
 router.get("/", async (req, res) => {
     try {
         const actions = await dbActions.get();
@@ -60,5 +60,33 @@ router.post("/", async (req, res) => {
         };
     };
 });
+
+router.put("/:actionId", async (req, res) => {
+    const { actionId } = req.params;
+    const updated = req.body;
+    if ( !actionId ) {
+        return res.status(400).json({
+            message: "Action with specified ID is not found."
+        })
+    } else if ( !updated.description || updated.description.length > 128 ) {
+        return res.status(400).json({
+            message: "Description is required. Description cannot be more than 128 characters."
+        })
+    } else if ( !updated.notes ) {
+        return res.status(400).json({
+            message: "Action notes are required."
+        })
+    } else {
+        try {
+            const updatedAction = await dbActions.update(actionId, updated);
+            res.status(200).json(updatedAction);
+        }
+        catch(err) {
+            res.status(500).json({
+                message: "Failed to update action."
+            })
+        }
+    }
+})
 
 module.exports = router;
