@@ -30,6 +30,19 @@ router.get("/:projectId", async (req, res) => {
     };
 });
 
+router.get("/:projectId", async (req, res) => {
+    const { projectId } = req.params;
+    try { 
+        const projectActions = await dbProjects.getProjectActions(projectId);
+        res.status(200).json(projectActions);
+    }
+    catch(err) {
+        res.status(500).json({
+            message: "Failed to retrieve specific project."
+        })
+    };
+});
+
 router.post("/", async (req, res) => {
     const project = req.body;
     if ( !project.name ) {
