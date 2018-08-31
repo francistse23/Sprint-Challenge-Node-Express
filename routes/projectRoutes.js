@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
             res.status(500).json({
                 message: "Failed to create new project."
             })
-        }
+        };
     };
 });
 
@@ -79,8 +79,23 @@ router.put("/:projectId", async (req, res) => {
             res.status(500).json({
                 message: "Updated failed."
             })
-        }
+        };
+    };
+});
+
+router.delete("/:projectId", async (req, res) => {
+    const { projectId } = req.params;
+    try {
+        const deleteProject = await dbProjects.remove(projectId);
+        res.status(200).json({
+            message: "Project deleted."
+        })
     }
-})
+    catch(err) {
+        res.status(500).json({
+            message: "Failed to delete project."
+        });
+    };
+});
 
 module.exports = router;

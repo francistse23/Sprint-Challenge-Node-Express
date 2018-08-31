@@ -85,8 +85,23 @@ router.put("/:actionId", async (req, res) => {
             res.status(500).json({
                 message: "Failed to update action."
             })
-        }
+        };
+    };
+});
+
+router.delete("/:actionId", async (req, res) => {
+    const { actionId } = req.params;
+    try {
+        const deleteAction = await dbActions.remove(actionId);
+        res.status(200).json({
+            message: "Action deleted."
+        })
     }
-})
+    catch(err) {
+        res.status(500).json({
+            message: "Failed to delete action."
+        });
+    };
+});
 
 module.exports = router;
