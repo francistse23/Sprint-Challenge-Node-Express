@@ -22,6 +22,20 @@ server.get("/projects", async (req, res) => {
     }
 })
 
+server.get("/projects/:projectId", async (req, res) => {
+    const { projectId } = req.params;
+    try { 
+        const project = await dbProjects.get(projectId);
+        res.status(200).json(project);
+    }
+    catch(err) {
+        res.status(500).json({
+            message: "Failed to retrieve specific project."
+        })
+    };
+});
+
+//ACTIONS
 server.get("/actions", async (req, res) => {
     try {
         const actions = await dbActions.get();
@@ -33,6 +47,19 @@ server.get("/actions", async (req, res) => {
         })
     };
 });
+
+server.get("/actions/:actionId", async (req, res) => {
+    const { actionId } = req.params;
+    try {
+        const action = await dbActions.get(actionId);
+        res.status(200).json(action);
+    }
+    catch(err) {
+        res.status(500).json({
+            message: "Failed to retrieve specific action."
+        })
+    }
+})
 
 
 server.listen(9000, () => console.log("====API on Port 9000===="))
